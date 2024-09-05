@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Stopwatch</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f0f0f0;
+    }
+
+    #stopwatch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    #time {
+      font-size: 4em;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #4caf50;
+      color: #fff;
+      font-size: 1.2em;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      background-color: #ccc;
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+  <div id="stopwatch">
+    <div id="time">00:00:00</div>
+    <button id="start">Start</button>
+    <br>
+    <button id="pause" disabled>Pause</button>
+    <br>
+    <button id="reset" disabled>Reset</button>
+    <br>
+  </div>
+
+  <script>
+    let startTime = 0;
+    let intervalId;
+    let isRunning = false;
+
+    const startButton = document.getElementById('start');
+    const pauseButton = document.getElementById('pause');
+    const resetButton = document.getElementById('reset');
+    const timeDisplay = document.getElementById('time');
+
+    startButton.addEventListener('click', startTimer);
+    pauseButton.addEventListener('click', pauseTimer);
+    resetButton.addEventListener('click', resetTimer);
+
+    function startTimer() {
+      if (!isRunning) {
+        startTime = Date.now();
+        intervalId = setInterval(updateTimer, 10);
+        isRunning = true;
+        startButton.disabled = true;
+        pauseButton.disabled = false;
+        resetButton.disabled = false;
+        
+      }
+    }
+
+    function pauseTimer() {
+      clearInterval(intervalId);
+      isRunning = false;
+      startButton.disabled = false;
+      pauseButton.disabled = true;
+      resetButton.disabled = false;
+    }
+
+    function resetTimer() {
+      clearInterval(intervalId);
+      isRunning = false;
+      startTime = 0;
+      timeDisplay.textContent = '00:00:00';
+      startButton.disabled = false;
+      pauseButton.disabled = true;
+      resetButton.disabled = true;
+    }
+
+    function updateTimer() {
+      const elapsedTime = Date.now() - startTime;
+      const seconds = Math.floor(elapsedTime / 1000);
+      const minutes = Math.floor(seconds / 60);
+      const hours = Math.floor(minutes / 60);
+
+      const formattedTime = `${pad(hours)}:${pad(minutes % 60)}:${pad(seconds % 60)}`;
+      timeDisplay.textContent = formattedTime;
+    }
+
+    function pad(number) {
+      return (number < 10 ? '0' : '') + number;
+    }
+  </script>
+</body>
+</html>
